@@ -3,7 +3,7 @@ model:
   name: "ConvM_Lstm"
   type: "ConvM_Lstm"
   complexity: 120
-  task_type: "binary_classification"
+  task_type: "multiclass_classification"
   
 architecture:
   model_type: "ConvM_Lstm"
@@ -32,10 +32,10 @@ architecture:
     hidden_dim: 256
     activation: "tanh"
     dropout: 0.3
-    num_classes: 2
+    num_classes: 3
 
 data:
-  dataset_name: "ConvM_Lstm_binary_classification"
+  dataset_name: "ConvM_Lstm_multiclass_classification"
   dataset_path: "data/processed/phase1"
   raw_data_path: "data/raw"
   processed_data_path: "data/processed"
@@ -46,8 +46,8 @@ data:
   encoding: "utf-8"
   
   target_column: "label"
-  positive_class: 1
-  negative_class: 0
+  classes: [-1, 0, 1]
+  num_classes: 3
   
   dimensions:
     input_dim: 768

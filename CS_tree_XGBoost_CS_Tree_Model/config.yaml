@@ -1,7 +1,7 @@
 # config.yaml - XGBoost CS Tree Model Configuration
 model:
   name: "XGBoost_CS_Tree_Model"
-  type: "binary_classification"
+  type: "multiclass_classification"
   framework: "xgboost"
   algorithm: "gradient_boosting_tree"
   complexity: 85
@@ -27,10 +27,10 @@ data_format:
   separator: ","
   
 task:
-  type: "binary_classification"
+  type: "multiclass_classification"
   target_column: "label"
-  positive_class: 1
-  negative_class: 0
+  num_classes: 3
+  classes: [-1, 0, 1]
   
 data_dimensions:
   n_features: null  # Will be determined from data
@@ -104,7 +104,7 @@ hyperparameters:
   min_child_weight: 1
   
   # 其他参数
-  objective: "binary:logistic"
+  objective: "multi:softmax"
   eval_metric: "logloss"
   tree_method: "auto"
   random_state: 42

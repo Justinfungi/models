@@ -64,7 +64,7 @@ class HRMConfig:
     activation: str = 'swiglu'
     norm_type: str = 'rms'
     norm_eps: float = 1e-6
-    num_classes: int = 2
+    num_classes: int = 3
     
     # 训练配置
     learning_rate: float = 0.001

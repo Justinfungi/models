@@ -6,7 +6,7 @@ architecture:
   model_name: "Conv_Trans"
   complexity: 140
   input_dim: null  # 自动推断
-  output_dim: 2  # 二分类
+  output_dim: 3  # 三分类
   
   # 卷积分支配置
   conv_branches:
@@ -31,7 +31,7 @@ architecture:
     hidden_dim: 256
     activation: "tanh"
     dropout: 0.3
-    num_classes: 2
+    num_classes: 3
 
 # 数据配置
 data:
@@ -151,5 +151,5 @@ random_seed: 42
 experiment:
   name: "conv_trans_experiment"
   version: "1.0"
-  description: "Conv_Trans model for binary classification"
-  tags: ["conv_trans", "binary_classification", "time_series"]
+  description: "Conv_Trans model for multiclass classification"
+  tags: ["conv_trans", "multiclass_classification", "time_series"]

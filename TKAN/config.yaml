@@ -20,8 +20,8 @@ architecture:
   spline_order: 3                   # B-spline阶数
   
   # 输出层配置
-  output_dim: 1                     # 输出维度（二元分类）
-  output_activation: "sigmoid"      # 输出激活函数
+  output_dim: 3                     # 输出维度（三分类）
+  output_activation: "softmax"      # 输出激活函数
 
 # 训练配置
 training:
@@ -41,7 +41,7 @@ training:
   step_size: 30                     # 调度步长
   
   # 损失函数
-  loss_function: "binary_crossentropy"  # 损失函数类型
+  loss_function: "categorical_crossentropy"  # 损失函数类型
   
   # 正则化
   l1_reg: 0.0                       # L1正则化
@@ -52,7 +52,7 @@ inference:
   # 预测配置
   batch_size: 128                   # 推理批次大小
   return_probabilities: true        # 是否返回概率
-  threshold: 0.5                    # 分类阈值（二元分类）
+  threshold: null                   # 分类阈值（三分类使用argmax）
   
   # 序列处理
   max_sequence_length: 30           # 最大序列长度

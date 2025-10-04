@@ -300,7 +300,7 @@ class Classifier(nn.Module):
         self.activation = config.get('activation', 'relu')
         self.use_batch_norm = config.get('use_batch_norm', True)
         self.output_activation = config.get('output_activation', 'softmax')
-        self.num_classes = config.get('num_classes', 2)
+        self.num_classes = config.get('num_classes', 3)
         
         # 构建分类网络
         layers = []
@@ -363,7 +363,7 @@ class MixedFrequencyFactorModel(nn.Module):
         
         self.model_name = model_config.get('name', 'mixed_frequency_factor_model')
         self.model_type = model_config.get('type', 'classification')
-        self.num_classes = model_config.get('num_classes', 2)
+        self.num_classes = model_config.get('num_classes', 3)
         
         # 多频率编码器
         encoder_config = model_config.get('multi_frequency_encoder', {})
@@ -502,7 +502,7 @@ if __name__ == "__main__":
                 'model': {
                     'name': 'test_model',
                     'type': 'classification',
-                    'num_classes': 2,
+                    'num_classes': 3,
                     'multi_frequency_encoder': {
                         'weekly': {'input_dim': 20, 'hidden_dim': 64, 'num_layers': 1, 'dropout': 0.1, 'bidirectional': True},
                         'daily': {'input_dim': 30, 'hidden_dim': 64, 'num_layers': 1, 'dropout': 0.1, 'bidirectional': True},

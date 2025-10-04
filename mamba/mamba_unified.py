@@ -80,7 +80,7 @@ class MambaConfig:
     rescale_prenorm_residual: bool = True
     
     # 任务配置
-    num_classes: int = 2
+    num_classes: int = 3
     input_dim: Optional[int] = None
     
     # 设备配置

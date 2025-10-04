@@ -4,7 +4,7 @@
 model:
   name: "mixed_frequency_factor_model"
   type: "classification"
-  num_classes: 2
+  num_classes: 3
   
   # 多频率编码器配置
   multi_frequency_encoder:

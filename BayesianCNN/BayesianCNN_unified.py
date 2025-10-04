@@ -668,7 +668,7 @@ class BayesianCNNModel(BaseModel):
                 print(f"🔍 自动检测输入维度: {self.input_dim}")
             
             if self.output_dim is None:
-                self.output_dim = 2  # 默认二分类
+                self.output_dim = 3  # 默认三分类
                 self.config.output_dim = self.output_dim
                 print(f"🔍 默认输出维度: {self.output_dim}")
             
@@ -843,7 +843,7 @@ class UnifiedTrainer:
                 print(f"🔧 模型已移动到设备: {self.device}")
                 
                 # 更新输出维度
-                if self.model.output_dim is None or self.model.output_dim == 2:
+                if self.model.output_dim is None or self.model.output_dim <= 2:
                     unique_labels = torch.unique(target)
                     actual_output_dim = len(unique_labels)
                     if actual_output_dim != self.model.output_dim:

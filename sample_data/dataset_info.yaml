@@ -1,0 +1,13 @@
+date_range:
+- '2015-01-01'
+- '2020-06-22'
+instruments:
+- 000001.SZ
+- 000002.SZ
+- 600000.SH
+label_distribution:
+- 862
+- 236
+- 902
+n_features: 62
+n_samples: 2000
