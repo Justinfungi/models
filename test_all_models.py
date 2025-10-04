@@ -125,7 +125,21 @@ class ModelTester:
                 with open(config_files[0], 'r', encoding='utf-8') as f:
                     config = yaml.safe_load(f)
                 result['config_valid'] = True
-                result['num_classes'] = config.get('model', {}).get('num_classes', 'unknown')
+
+                # 尝试从多个位置获取num_classes
+                num_classes = 'unknown'
+                if 'model' in config and 'num_classes' in config['model']:
+                    num_classes = config['model']['num_classes']
+                elif 'task' in config and 'num_classes' in config['task']:
+                    num_classes = config['task']['num_classes']
+                elif 'architecture' in config and 'num_classes' in config['architecture']:
+                    num_classes = config['architecture']['num_classes']
+                elif 'architecture' in config and 'classifier' in config['architecture'] and 'num_classes' in config['architecture']['classifier']:
+                    num_classes = config['architecture']['classifier']['num_classes']
+                elif 'architecture' in config and 'fc' in config['architecture'] and 'num_classes' in config['architecture']['fc']:
+                    num_classes = config['architecture']['fc']['num_classes']
+
+                result['num_classes'] = num_classes
             except Exception as e:
                 result['errors'].append(f"配置文件加载错误: {e}")
 
@@ -133,11 +147,15 @@ class ModelTester:
         python_files = list(model_path.glob('*.py'))
         main_files = [f for f in python_files if 'unified.py' in f.name or f.name in ['model.py', 'training.py']]
 
+        all_main_classes = []
+        architecture_valid = False
+        training_found = False
+        inference_found = False
+
         for py_file in main_files:
             try:
                 # 尝试导入模块
                 module_name = py_file.stem
-                spec = None
 
                 # 添加模型目录到Python路径
                 if str(model_path) not in sys.path:
@@ -152,28 +170,55 @@ class ModelTester:
                         result['imports_work'] = True
 
                         # 检查是否有主要的类
-                        main_classes = []
+                        file_main_classes = []
                         for attr_name in dir(module):
                             attr = getattr(module, attr_name)
                             if hasattr(attr, '__module__') and attr.__module__ == module_name:
                                 if 'Model' in attr_name or 'Config' in attr_name:
-                                    main_classes.append(attr_name)
+                                    file_main_classes.append(attr_name)
 
-                        result['main_classes'] = main_classes
-                        result['architecture_check'] = len(main_classes) > 0
+                        all_main_classes.extend(file_main_classes)
+
+                        # 如果这个文件有有效的架构，则整体架构有效
+                        if len(file_main_classes) > 0:
+                            architecture_valid = True
+
+                        # 检查训练和推理接口
+                        # 检查模块级别的函数
+                        if hasattr(module, 'train'):
+                            training_found = True
+                        if hasattr(module, 'predict') or hasattr(module, 'inference'):
+                            inference_found = True
+
+                        # 检查类级别的函数
+                        for attr_name in dir(module):
+                            attr = getattr(module, attr_name)
+                            if hasattr(attr, '__call__') and not attr_name.startswith('_'):
+                                if 'train' in attr_name.lower():
+                                    training_found = True
+                                if 'predict' in attr_name.lower() or 'inference' in attr_name.lower():
+                                    inference_found = True
+
+                                # 检查类的方法
+                                if hasattr(attr, '__dict__'):
+                                    methods = [m for m in dir(attr) if not m.startswith('_')]
+                                    if 'train' in methods:
+                                        training_found = True
+                                    if any(m in methods for m in ['predict', 'inference', 'forward']):
+                                        inference_found = True
 
                 except Exception as e:
                     result['errors'].append(f"导入{py_file.name}失败: {e}")
                     continue
 
-                # 检查训练和推理接口
-                if hasattr(module, 'train'):
-                    result['training_interface'] = True
-                if hasattr(module, 'predict') or hasattr(module, 'inference'):
-                    result['inference_interface'] = True
-
             except Exception as e:
                 result['errors'].append(f"检查{py_file.name}时出错: {e}")
+
+        # 设置最终结果
+        result['main_classes'] = all_main_classes
+        result['architecture_check'] = architecture_valid
+        result['training_interface'] = training_found
+        result['inference_interface'] = inference_found
 
         return result
 

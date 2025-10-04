@@ -3,6 +3,9 @@
 
 # 模型架构配置
 architecture:
+  # 模型基本配置
+  num_classes: 3
+
   # 基础模型参数
   d_model: 768                    # 模型隐藏维度
   n_layer: 24                     # Mamba层数量

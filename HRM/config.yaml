@@ -2,6 +2,9 @@
 
 # HRM 模型架构配置
 architecture:
+  # 模型基本配置
+  num_classes: 3
+
   # 核心维度参数
   d_model: 512                    # 模型隐藏维度
   d_ff: 2048                      # 前馈网络维度

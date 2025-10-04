@@ -2,6 +2,9 @@
 
 # TKAN模型架构配置
 architecture:
+  # 模型基本配置
+  num_classes: 3
+
   # TKAN层配置
   units: 128                        # TKAN层输出单元数
   return_sequences: false           # 是否返回完整序列

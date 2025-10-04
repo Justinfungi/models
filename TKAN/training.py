@@ -24,7 +24,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # 导入模型
-from model import TKAN, set_all_seeds, setup_device
+from TKAN_unified import TKANModel, set_all_seeds, setup_device
 
 
 class TKANTrainer:
@@ -271,7 +271,7 @@ class TKANTrainer:
             self.logger.info("设置模型...")
             
             # 创建模型
-            self.model = TKAN(self.config)
+            self.model = TKANModel(self.config)
             self.model.to(self.device)
             
             # 通过一个样本来初始化模型（如果有数据加载器）

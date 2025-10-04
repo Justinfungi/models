@@ -2,6 +2,9 @@
 # Phase 1 精简化配置原则 - 仅包含核心调优参数
 
 architecture:
+  # 模型基本配置
+  num_classes: 3
+
   # 贝叶斯层配置
   bayesian_config:
     prior_mu: 0                      # 先验分布均值
