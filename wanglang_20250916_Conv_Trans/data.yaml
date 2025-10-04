@@ -1,0 +1,262 @@
+# data.yaml - Conv_Trans 数据配置文件
+# 数据源配置
+data_source:
+  dataset_name: "conv_trans_dataset"
+  dataset_path: "data/processed/conv_trans"
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  
+# 数据格式配置
+data_format:
+  input_type: "tabular"
+  feature_identifier: "@"
+  file_format: "csv"
+  encoding: "utf-8"
+  separator: ","
+  
+# 任务配置
+task:
+  type: "binary_classification"
+  target_column: "label"
+  positive_class: 1
+  negative_class: 0
+  
+# 数据维度配置
+data_dimensions:
+  input_dim: 768
+  seq_len: 512
+  feature_count: 100
+  max_features: 10000
+  
+# 数据分割配置
+data_split:
+  train_ratio: 0.7
+  validation_ratio: 0.15
+  test_ratio: 0.15
+  random_seed: 42
+  stratify: true
+  
+# 数据预处理配置
+preprocessing:
+  normalization:
+    method: "standard"  # standard, minmax, robust
+    feature_wise: true
+  
+  missing_values:
+    strategy: "mean"  # mean, median, mode, drop
+    threshold: 0.1
+    
+  feature_selection:
+    enabled: true
+    method: "variance"  # variance, correlation, mutual_info
+    n_features: 50
+    
+  outlier_detection:
+    enabled: true
+    method: "iqr"  # iqr, zscore, isolation_forest
+    threshold: 3.0
+    
+# 数据增强配置
+augmentation:
+  enabled: false
+  methods:
+    - "noise_injection"
+    - "time_warping"
+  noise_level: 0.01
+  augmentation_ratio: 0.2
+  
+# 批处理配置
+batch_processing:
+  batch_size: 32
+  shuffle: true
+  drop_last: false
+  num_workers: 4
+  pin_memory: true
+  
+# 缓存配置
+cache:
+  enabled: true
+  cache_dir: "cache/conv_trans"
+  cache_size_limit: "2GB"
+  
+# 验证配置
+validation:
+  cross_validation:
+    enabled: false
+    n_folds: 5
+    shuffle: true
+    
+  holdout_validation:
+    enabled: true
+    validation_size: 0.15
+    
+# 数据质量检查
+quality_check:
+  enabled: true
+  checks:
+    - "missing_values"
+    - "duplicate_rows"
+    - "data_types"
+    - "value_ranges"
+  
+  thresholds:
+    missing_threshold: 0.05
+    duplicate_threshold: 0.01
+    
+# 日志配置
+logging:
+  level: "INFO"
+  log_file: "logs/data_processing.log"
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+# 环境配置
+environment:
+  device: "auto"  # auto, cpu, cuda
+  precision: "float32"
+  deterministic: true
+  
+# 输出配置
+output:
+  save_processed: true
+  save_statistics: true
+  statistics_file: "data_statistics.json"
+  processed_file_prefix: "conv_trans_processed"
+
+# Phase 1 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_1:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_1_2013-01-01_2018-06-30.pq"
+  samples: 24726
+  features: 93
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2013-01-01"
+    end_date: "2017-07-01"
+    samples: 17308
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2017-07-02"
+    end_date: "2017-12-31"
+    samples: 3708
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2018-01-01"
+    end_date: "2018-07-02"
+    samples: 3710
+    duration_years: 0.5
+# Phase 2 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_2:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_2_2013-07-01_2018-12-31.pq"
+  samples: 28633
+  features: 89
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2013-07-01"
+    end_date: "2017-12-29"
+    samples: 20043
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2017-12-30"
+    end_date: "2018-06-30"
+    samples: 4294
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2018-07-01"
+    end_date: "2018-12-30"
+    samples: 4296
+    duration_years: 0.5
+# Phase 3 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_3:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_3_2014-01-01_2019-06-30.pq"
+  samples: 32118
+  features: 85
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2014-01-01"
+    end_date: "2018-07-01"
+    samples: 22482
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2018-07-02"
+    end_date: "2018-12-31"
+    samples: 4817
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2019-01-01"
+    end_date: "2019-07-02"
+    samples: 4819
+    duration_years: 0.5
+# Phase 4 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_4:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_4_2014-07-01_2019-12-31.pq"
+  samples: 35549
+  features: 80
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2014-07-01"
+    end_date: "2018-12-29"
+    samples: 24884
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2018-12-30"
+    end_date: "2019-06-30"
+    samples: 5332
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2019-07-01"
+    end_date: "2019-12-30"
+    samples: 5333
+    duration_years: 0.5
+# Phase 5 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_5:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_5_2015-01-01_2020-06-30.pq"
+  samples: 37236
+  features: 82
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2015-01-01"
+    end_date: "2019-07-01"
+    samples: 26065
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2019-07-02"
+    end_date: "2019-12-31"
+    samples: 5585
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2020-01-01"
+    end_date: "2020-07-01"
+    samples: 5586
+    duration_years: 0.5
+# Phase 6 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_6:
+  file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+  samples: 39648
+  features: 75
+  train_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2015-07-01"
+    end_date: "2019-12-29"
+    samples: 27753
+    duration_years: 4.5
+  valid_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2019-12-30"
+    end_date: "2020-06-29"
+    samples: 5947
+    duration_years: 0.5
+  test_data:
+    file: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2020-06-30"
+    end_date: "2020-12-29"
+    samples: 5948
+    duration_years: 0.5

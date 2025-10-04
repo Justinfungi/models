@@ -1,0 +1,134 @@
+# config.yaml - ConvM_Lstm Model Configuration
+model:
+  name: "ConvM_Lstm"
+  type: "ConvM_Lstm"
+  complexity: 120
+  task_type: "binary_classification"
+  
+architecture:
+  model_type: "ConvM_Lstm"
+  input_dim: null  # 自动推断
+  seq_len: 60
+  num_features: 20
+  
+  # 卷积分支配置
+  conv_branches:
+    num_branches: 4
+    kernel_sizes: [[1, 20], [3, 20], [5, 20], [7, 20]]
+    out_channels: 32
+    activation: "relu"
+    batch_norm: true
+    pooling: "adaptive_avg"
+    
+  # LSTM配置
+  lstm:
+    hidden_size: 128
+    num_layers: 1
+    bidirectional: false
+    dropout: 0.2
+    
+  # 全连接层配置
+  fc:
+    hidden_dim: 256
+    activation: "tanh"
+    dropout: 0.3
+    num_classes: 2
+
+data:
+  dataset_name: "ConvM_Lstm_binary_classification"
+  dataset_path: "data/processed/phase1"
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  
+  input_type: "tabular"
+  feature_identifier: "@"
+  file_format: "csv"
+  encoding: "utf-8"
+  
+  target_column: "label"
+  positive_class: 1
+  negative_class: 0
+  
+  dimensions:
+    input_dim: 768
+    seq_len: 60
+    num_features: 20
+    
+  split:
+    train_ratio: 0.7
+    val_ratio: 0.15
+    test_ratio: 0.15
+    random_seed: 42
+    stratify: true
+
+preprocessing:
+  normalization:
+    method: "standard"
+    feature_wise: true
+  missing_values:
+    strategy: "mean"
+    threshold: 0.1
+  outlier_detection:
+    method: "iqr"
+    threshold: 3.0
+  feature_selection:
+    enabled: true
+    method: "correlation"
+    k_best: 50
+
+training:
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  optimizer: "adam"
+  weight_decay: 1e-4
+  scheduler:
+    type: "step"
+    step_size: 30
+    gamma: 0.1
+  early_stopping:
+    patience: 10
+    min_delta: 1e-4
+  
+  loss:
+    type: "cross_entropy"
+    class_weights: null
+    
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "auc"
+
+inference:
+  batch_size: 64
+  threshold: 0.5
+  output_probabilities: true
+
+data_loader:
+  shuffle: true
+  num_workers: 4
+  pin_memory: true
+  drop_last: false
+  persistent_workers: true
+
+logging:
+  level: "INFO"
+  save_dir: "phase1/logs/ConvM_Lstm"
+  tensorboard: true
+  wandb: false
+
+checkpoint:
+  save_dir: "phase1/models/ConvM_Lstm"
+  save_best: true
+  save_last: true
+  monitor: "val_accuracy"
+  mode: "max"
+
+device:
+  use_cuda: true
+  gpu_id: 0
+  mixed_precision: false
+
+random_seed: 42

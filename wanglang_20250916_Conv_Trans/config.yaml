@@ -1,0 +1,155 @@
+# config.yaml - Conv_Trans 配置文件
+
+# 模型架构配置
+architecture:
+  model_type: "Conv_Trans"
+  model_name: "Conv_Trans"
+  complexity: 140
+  input_dim: null  # 自动推断
+  output_dim: 2  # 二分类
+  
+  # 卷积分支配置
+  conv_branches:
+    num_branches: 4
+    kernel_sizes: [[1, 20], [3, 20], [5, 20], [7, 20]]
+    out_channels: 32
+    activation: "relu"
+    batch_norm: true
+    pooling: "adaptive_avg"
+    
+  # Transformer配置
+  transformer:
+    d_model: 128
+    nhead: 8
+    num_layers: 6
+    dim_feedforward: 512
+    dropout: 0.1
+    activation: "relu"
+    
+  # 全连接层配置
+  classifier:
+    hidden_dim: 256
+    activation: "tanh"
+    dropout: 0.3
+    num_classes: 2
+
+# 数据配置
+data:
+  dataset_name: "conv_trans_dataset"
+  dataset_path: "data/processed/conv_trans"
+  input_type: "tabular"
+  feature_identifier: "@"
+  
+  # 数据维度
+  dimensions:
+    input_dim: 768
+    seq_len: 512
+    feature_count: 100
+    max_features: 10000
+    
+  # 数据分割
+  split:
+    train_ratio: 0.7
+    validation_ratio: 0.15
+    test_ratio: 0.15
+    random_seed: 42
+    stratify: true
+    
+  # 预处理
+  preprocessing:
+    normalization:
+      method: "standard"
+      feature_wise: true
+    missing_values:
+      strategy: "mean"
+      threshold: 0.1
+    feature_selection:
+      enabled: true
+      method: "variance"
+      n_features: 50
+
+# 训练配置
+training:
+  # 基础参数
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  patience: 10
+  
+  # 优化器配置
+  optimizer:
+    type: "adam"
+    weight_decay: 1e-4
+    betas: [0.9, 0.999]
+    eps: 1e-8
+    
+  # 学习率调度
+  scheduler:
+    type: "reduce_on_plateau"
+    factor: 0.5
+    patience: 5
+    min_lr: 1e-6
+    
+  # 损失函数
+  loss:
+    type: "cross_entropy"
+    class_weights: null
+    label_smoothing: 0.0
+    
+  # 正则化
+  regularization:
+    dropout: 0.2
+    weight_decay: 1e-4
+    gradient_clipping: 1.0
+    
+  # 验证配置
+  validation:
+    frequency: 1
+    metric: "accuracy"
+    mode: "max"
+
+# 推理配置
+inference:
+  batch_size: 64
+  device: "auto"  # auto, cpu, cuda
+  precision: "fp32"  # fp32, fp16
+  
+  # 输出配置
+  output:
+    save_predictions: true
+    save_probabilities: true
+    output_format: "csv"
+
+# 日志和监控配置
+logging:
+  level: "INFO"
+  save_logs: true
+  log_dir: "logs"
+  tensorboard: true
+  wandb:
+    enabled: false
+    project: "conv_trans"
+    
+# 检查点配置
+checkpoint:
+  save_best: true
+  save_last: true
+  save_dir: "checkpoints"
+  monitor: "val_accuracy"
+  mode: "max"
+  
+# 设备配置
+device:
+  type: "auto"  # auto, cpu, cuda, mps
+  gpu_ids: [0]
+  mixed_precision: false
+  
+# 随机种子
+random_seed: 42
+
+# 实验配置
+experiment:
+  name: "conv_trans_experiment"
+  version: "1.0"
+  description: "Conv_Trans model for binary classification"
+  tags: ["conv_trans", "binary_classification", "time_series"]

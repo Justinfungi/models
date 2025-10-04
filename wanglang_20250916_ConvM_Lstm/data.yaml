@@ -1,0 +1,226 @@
+# data.yaml - ConvM_Lstm Binary Classification Configuration
+data_source:
+  dataset_name: "ConvM_Lstm_binary_classification"
+  dataset_path: "data/processed/phase1"
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  
+data_format:
+  input_type: "tabular"
+  feature_identifier: "@"
+  file_format: "csv"
+  encoding: "utf-8"
+  
+task:
+  type: "binary_classification"
+  phase: "phase1"
+  target_column: "label"
+  positive_class: 1
+  negative_class: 0
+  
+data_dimensions:
+  input_dim: 768
+  seq_len: 60
+  num_features: 20
+  batch_size: 32
+  
+data_split:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  random_seed: 42
+  stratify: true
+  
+preprocessing:
+  normalization:
+    method: "standard"  # standard, minmax, robust
+    feature_wise: true
+  missing_values:
+    strategy: "mean"  # mean, median, mode, drop
+    threshold: 0.1
+  outlier_detection:
+    method: "iqr"  # iqr, zscore, isolation_forest
+    threshold: 3.0
+  feature_selection:
+    enabled: true
+    method: "correlation"  # correlation, mutual_info, chi2
+    k_best: 50
+    
+data_loader:
+  shuffle: true
+  num_workers: 4
+  pin_memory: true
+  drop_last: false
+  persistent_workers: true
+  
+augmentation:
+  enabled: false
+  noise_factor: 0.01
+  dropout_rate: 0.1
+  
+validation:
+  cross_validation:
+    enabled: false
+    folds: 5
+    shuffle: true
+  holdout_validation:
+    enabled: true
+    test_size: 0.2
+    
+data_quality:
+  check_duplicates: true
+  check_missing: true
+  check_outliers: true
+  min_samples_per_class: 100
+  
+paths:
+  train_data: "data/processed/train.csv"
+  val_data: "data/processed/val.csv"
+  test_data: "data/processed/test.csv"
+  feature_names: "data/processed/feature_names.json"
+  label_encoder: "data/processed/label_encoder.pkl"
+  scaler: "data/processed/scaler.pkl"
+  
+logging:
+  data_stats: true
+  save_processed: true
+  log_level: "INFO"
+
+# Phase 1 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_1:
+  file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+  samples: 24726
+  features: 93
+  train_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2013-01-01"
+    end_date: "2017-07-01"
+    samples: 17308
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2017-07-02"
+    end_date: "2017-12-31"
+    samples: 3708
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2018-01-01"
+    end_date: "2018-07-02"
+    samples: 3710
+    duration_years: 0.5
+# Phase 2 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_2:
+  file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+  samples: 28633
+  features: 89
+  train_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2013-07-01"
+    end_date: "2017-12-29"
+    samples: 20043
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2017-12-30"
+    end_date: "2018-06-30"
+    samples: 4294
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2018-07-01"
+    end_date: "2018-12-30"
+    samples: 4296
+    duration_years: 0.5
+# Phase 3 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_3:
+  file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+  samples: 32118
+  features: 85
+  train_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2014-01-01"
+    end_date: "2018-07-01"
+    samples: 22482
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2018-07-02"
+    end_date: "2018-12-31"
+    samples: 4817
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2019-01-01"
+    end_date: "2019-07-02"
+    samples: 4819
+    duration_years: 0.5
+# Phase 4 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_4:
+  file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+  samples: 35549
+  features: 80
+  train_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2014-07-01"
+    end_date: "2018-12-29"
+    samples: 24884
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2018-12-30"
+    end_date: "2019-06-30"
+    samples: 5332
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2019-07-01"
+    end_date: "2019-12-30"
+    samples: 5333
+    duration_years: 0.5
+# Phase 5 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_5:
+  file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+  samples: 37236
+  features: 82
+  train_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2015-01-01"
+    end_date: "2019-07-01"
+    samples: 26065
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2019-07-02"
+    end_date: "2019-12-31"
+    samples: 5585
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2020-01-01"
+    end_date: "2020-07-01"
+    samples: 5586
+    duration_years: 0.5
+# Phase 6 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_6:
+  file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+  samples: 39648
+  features: 75
+  train_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2015-07-01"
+    end_date: "2019-12-29"
+    samples: 27753
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2019-12-30"
+    end_date: "2020-06-29"
+    samples: 5947
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2020-06-30"
+    end_date: "2020-12-29"
+    samples: 5948
+    duration_years: 0.5

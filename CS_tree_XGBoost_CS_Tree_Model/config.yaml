@@ -1,0 +1,182 @@
+# config.yaml - XGBoost CS Tree Model Configuration
+model:
+  name: "XGBoost_CS_Tree_Model"
+  type: "binary_classification"
+  framework: "xgboost"
+  algorithm: "gradient_boosting_tree"
+  complexity: 85
+  version: "1.0.0"
+
+architecture:
+  model_type: "XGBoost_CS_Tree_Model"
+  framework: "xgboost"
+  algorithm: "gradient_boosting_tree"
+  backend: "xgboost"  # xgboost or sklearn
+  
+data_source:
+  dataset_name: "xgboost_cs_tree_dataset"
+  dataset_path: "data/processed/xgboost_cs_tree"
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  feature_identifier: "@"
+  
+data_format:
+  input_type: "tabular"
+  file_format: "csv"
+  encoding: "utf-8"
+  separator: ","
+  
+task:
+  type: "binary_classification"
+  target_column: "label"
+  positive_class: 1
+  negative_class: 0
+  
+data_dimensions:
+  n_features: null  # Will be determined from data
+  n_samples: null   # Will be determined from data
+  feature_names: []  # Will be extracted from data
+  
+data_split:
+  train_ratio: 0.7
+  validation_ratio: 0.15
+  test_ratio: 0.15
+  random_state: 42
+  stratify: true
+  shuffle: true
+  time_series_split: true
+  
+preprocessing:
+  handle_missing:
+    strategy: "mean"  # mean, median, mode, drop
+    fill_value: null
+  
+  feature_scaling:
+    method: "standard"  # standard, minmax, robust, none
+    feature_range: [0, 1]
+  
+  feature_selection:
+    enabled: true
+    method: "mutual_info"  # mutual_info, chi2, f_classif
+    k_best: 100
+    threshold: 0.01
+  
+  categorical_encoding:
+    method: "label"  # label, onehot, target
+    handle_unknown: "ignore"
+
+training:
+  # sklearn模型参数
+  random_state: 42
+  test_size: 0.2
+  cv_folds: 5
+  validation_split: 0.2
+  early_stopping: true
+  patience: 10
+  
+  # 滚动窗口训练
+  rolling_window:
+    enabled: true
+    window_size: 252  # 一年交易日
+    step_size: 21     # 一个月步长
+    
+  # 超参数优化
+  hyperparameter_optimization:
+    enabled: true
+    framework: "optuna"
+    n_trials: 100
+    timeout: 3600
+    
+hyperparameters:
+  # XGBoost核心参数
+  n_estimators: 100
+  max_depth: 6
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  colsample_bylevel: 1.0
+  colsample_bynode: 1.0
+  
+  # 正则化参数
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  gamma: 0.0
+  min_child_weight: 1
+  
+  # 其他参数
+  objective: "binary:logistic"
+  eval_metric: "logloss"
+  tree_method: "auto"
+  random_state: 42
+  n_jobs: -1
+  verbosity: 1
+  
+  # 早停参数
+  early_stopping_rounds: 10
+  
+  # 搜索空间（用于超参数优化）
+  search_space:
+    n_estimators: [50, 500]
+    max_depth: [3, 10]
+    learning_rate: [0.01, 0.3]
+    subsample: [0.6, 1.0]
+    colsample_bytree: [0.6, 1.0]
+    reg_alpha: [0.0, 1.0]
+    reg_lambda: [0.0, 2.0]
+    gamma: [0.0, 1.0]
+    min_child_weight: [1, 10]
+
+inference:
+  batch_prediction: true
+  batch_size: 1000
+  output_probabilities: true
+  threshold: 0.5
+  
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "roc_auc"
+    - "log_loss"
+    - "ic"  # Information Coefficient
+    - "rank_ic"
+  
+  # IC评估参数
+  ic_evaluation:
+    enabled: true
+    periods: [1, 5, 10, 20]  # 预测周期
+    quantiles: [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9]
+    
+  cross_validation:
+    enabled: true
+    cv_folds: 5
+    scoring: "roc_auc"
+    
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "logs/xgboost_cs_tree.log"
+  
+model_persistence:
+  save_model: true
+  model_path: "models/xgboost_cs_tree"
+  save_format: "pickle"  # pickle, joblib
+  versioning: true
+  
+feature_importance:
+  enabled: true
+  method: "gain"  # gain, weight, cover
+  top_k: 50
+  plot: true
+  
+monitoring:
+  track_performance: true
+  alert_threshold: 0.05  # 性能下降阈值
+  drift_detection: true
+  
+environment:
+  gpu_acceleration: false
+  memory_limit: "8GB"
+  parallel_jobs: -1

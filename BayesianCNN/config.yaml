@@ -1,0 +1,53 @@
+# BayesianCNN Model Configuration
+# Phase 1 精简化配置原则 - 仅包含核心调优参数
+
+architecture:
+  # 贝叶斯层配置
+  bayesian_config:
+    prior_mu: 0                      # 先验分布均值
+    prior_sigma: 0.1                 # 先验分布标准差
+    posterior_mu_initial: [0, 0.1]   # 后验均值初始化 [均值, 标准差]
+    posterior_rho_initial: [-3, 0.1] # 后验rho参数初始化 [均值, 标准差]
+  
+  # 网络架构
+  network:
+    input_dim: null                  # 自动推断输入维度
+    hidden_dims: [128, 64]           # 隐藏层维度列表
+    output_dim: null                 # 自动推断输出维度
+    dropout: 0.2                     # Dropout概率
+    activation: "relu"               # 激活函数
+
+training:
+  # 优化器配置
+  optimizer:
+    type: "adam"                     # 优化器类型
+    learning_rate: 0.001             # 学习率
+    weight_decay: 1e-4               # 权重衰减
+    momentum: 0.9                    # 动量参数（SGD使用）
+  
+  # 训练控制
+  epochs: 100                        # 训练轮数
+  batch_size: 256                     # 批次大小
+  patience: 10                       # 早停耐心值
+  
+  # 损失函数配置
+  loss:
+    kl_weight: 0.1                   # KL散度损失权重
+    classification_weight: 1.0       # 分类损失权重
+  
+  # 学习率调度
+  scheduler:
+    type: "step"                     # 调度器类型
+    step_size: 30                    # 步长
+    gamma: 0.1                       # 衰减因子
+
+inference:
+  # 贝叶斯采样
+  sampling:
+    num_samples: 10                  # 贝叶斯采样次数
+    sample_during_inference: true    # 推理时是否采样
+  
+  # 预测配置
+  prediction:
+    uncertainty_estimation: true     # 是否估计不确定性
+    confidence_threshold: 0.5        # 置信度阈值

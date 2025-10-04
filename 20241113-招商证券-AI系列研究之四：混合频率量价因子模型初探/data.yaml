@@ -1,0 +1,279 @@
+# data.yaml - 数据配置文件
+# 定义数据路径、数据格式和数据处理参数
+
+# 数据源配置
+data_source:
+  # 主数据路径
+  train_path: "../../../data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+  # 备用路径（如果主路径不存在）
+  alternative_paths:
+    - "/data/feature_set/mrmr_task_6_2015-07-01_2020-12-31.pq"
+    - "./data/processed/mrmr_task_6_2015-07-01_2020-12-31.pq"
+    - "./data/raw/stock_data.csv"
+    - "../../../data/data900_2020-01-01_2025-07-01.pq"
+    - "../../../data/real_database_extract.parquet"
+  
+  # 数据格式
+  format: "parquet"               # 数据文件格式 (parquet/csv/pickle/hdf5)
+  encoding: "utf-8"               # 文件编码
+  
+  # 数据时间范围
+  start_date: "2016-01-01"       # 数据开始日期
+  end_date: "2021-07-01"         # 数据结束日期
+  
+  # 任务配置
+  task_id: "06"                  # 任务ID
+  data_version: "mrmr"           # 数据版本标识
+  dataset_name: "stock_prediction" # 数据集名称
+
+# 数据schema定义
+data_schema:
+  # 必需列
+  required_columns:
+    - "date"                     # 日期列
+    - "instrument"               # 股票代码列
+    - "label"                    # 标签列（用于分类）
+  
+  # 特征列（可选，如果不指定则使用所有数值列）
+  feature_columns: null          # null表示自动检测数值列
+  
+  # 排除列（不用于训练的列）
+  exclude_columns:
+    - "date"
+    - "instrument"
+    - "label"
+    - "weight"                   # 样本权重（如果有）
+    - "market_cap"               # 市值（如果不用作特征）
+  
+  # 目标列
+  target_column: "label"         # 目标变量列名
+  
+  # 时间列
+  time_column: "date"           # 时间戳列名
+  
+  # 分组列
+  group_column: "instrument"     # 用于分组的列（股票代码）
+  
+  # 数据类型定义
+  column_types:
+    date: "datetime64"
+    instrument: "category"
+    label: "int32"
+
+# 数据维度配置
+data_dimensions:
+  input_dim: 768                 # 输入特征维度
+  seq_len: 60                    # 序列长度（时间步数）
+  output_dim: 3                  # 输出维度（分类数）
+  max_features: 1000             # 最大特征数
+  min_samples: 10000             # 最小样本数
+
+# 数据分割配置
+data_split:
+  # 分割方式
+  split_method: "time_series"    # 分割方法 (random/time_series/group/stratified)
+  
+  # 时间序列分割参数
+  train_ratio: 0.70              # 训练集比例
+  val_ratio: 0.15                # 验证集比例
+  test_ratio: 0.15               # 测试集比例
+  
+  # 时间分割点（用于时序数据）
+  train_end_date: "2020-01-01"   # 训练集结束日期
+  val_end_date: "2020-10-01"     # 验证集结束日期
+  
+  # 分组分割参数（如果使用group分割）
+  group_shuffle: false           # 是否打乱分组
+  test_groups: []               # 测试组列表
+  
+  # 随机分割参数
+  shuffle: false                 # 是否打乱数据（时序数据通常不打乱）
+  stratify: true                 # 是否分层采样（保持类别比例）
+  random_state: 42              # 随机种子
+
+# 数据预处理配置
+data_preprocessing:
+  # 特征标准化
+  normalize_features: true
+
+# 数据处理配置
+data_processing:
+  # 缺失值处理
+  missing_values:
+    strategy: "drop"             # 处理策略 (drop/fill/interpolate/forward_fill)
+    fill_value: 0               # 填充值（如果strategy为fill）
+    interpolation_method: "linear" # 插值方法
+    
+  # 异常值处理
+  outliers:
+    detect: false                # 是否检测异常值
+    method: "iqr"               # 检测方法 (iqr/zscore/isolation_forest)
+    threshold: 3                # 阈值
+    action: "clip"              # 处理方式 (clip/drop/keep/winsorize)
+  
+  # 数据过滤
+  filters:
+    min_samples_per_group: 30   # 每个股票最少样本数
+    min_features: 10            # 最少特征数
+    max_missing_ratio: 0.3      # 最大缺失比例
+    
+  # 特征选择
+  feature_selection:
+    enabled: false              # 是否启用特征选择
+    method: "mrmr"             # 特征选择方法（数据已经是mrmr选择后的）
+    n_features: null           # 选择的特征数（null表示全部）
+    selection_threshold: 0.01   # 选择阈值
+  
+  # 数据平衡
+  balancing:
+    enabled: false             # 是否平衡数据
+    method: "none"            # 平衡方法 (none/oversample/undersample/smote)
+    target_ratio: 1.0         # 目标类别比例
+    sampling_strategy: "auto"  # 采样策略
+
+# 数据转换配置
+data_transform:
+  # 标准化配置
+  standardization:
+    enabled: true              # 是否标准化
+    method: "standard"         # 标准化方法 (standard/minmax/robust/quantile)
+    per_feature: true         # 是否按特征标准化
+    feature_range: [0, 1]     # 特征范围（用于minmax）
+    
+  # 归一化配置  
+  normalization:
+    enabled: false            # 是否归一化
+    method: "l2"              # 归一化方法 (l1/l2/max)
+    
+  # 编码配置
+  encoding:
+    categorical_encoding: "label"  # 分类变量编码 (label/onehot/ordinal/target)
+    handle_unknown: "ignore"       # 未知类别处理方式
+    
+  # 时序特征
+  time_features:
+    add_time_features: false   # 是否添加时间特征
+    features_to_add:          # 要添加的时间特征
+      - "day_of_week"
+      - "month"
+      - "quarter"
+      - "year"
+      - "is_weekend"
+      - "is_month_end"
+
+# 数据加载配置
+data_loader:
+  # 批处理
+  batch_size: 128             # 批次大小
+  val_batch_size: 256         # 验证批次大小
+  test_batch_size: 256        # 测试批次大小
+  
+  # 数据加载器设置
+  num_workers: 4              # 工作进程数
+  pin_memory: true           # 是否固定内存
+  drop_last: false           # 是否丢弃最后不完整批次
+  shuffle_train: true        # 是否打乱训练数据
+  shuffle_val: false         # 是否打乱验证数据
+  shuffle_test: false        # 是否打乱测试数据
+  prefetch_factor: 2         # 预取因子
+  persistent_workers: true   # 持久化工作进程
+
+# 数据增强配置（时序数据）
+data_augmentation:
+  enabled: false              # 是否启用数据增强
+  augmentation_ratio: 0.1     # 增强数据比例
+  methods:                   # 增强方法
+    - name: "noise"
+      enabled: true
+      params:
+        noise_level: 0.01
+        noise_type: "gaussian"
+    - name: "scaling"
+      enabled: true
+      params:
+        scale_range: [0.9, 1.1]
+    - name: "time_shift"
+      enabled: false
+      params:
+        shift_range: [-2, 2]
+    - name: "magnitude_warping"
+      enabled: false
+      params:
+        sigma: 0.2
+        knot: 4
+
+# 数据验证配置
+data_validation:
+  # 数据质量检查
+  check_nulls: true          # 检查空值
+  check_duplicates: true     # 检查重复
+  check_types: true         # 检查数据类型
+  check_range: true         # 检查数值范围
+  check_distribution: true   # 检查数据分布
+  
+  # 数据统计
+  compute_statistics: true   # 计算数据统计信息
+  save_statistics: true     # 保存统计信息
+  statistics_path: "data_statistics.json"
+  
+  # 数据完整性
+  integrity_checks:
+    check_schema: true       # 检查schema一致性
+    check_temporal_order: true # 检查时间顺序
+    check_feature_correlation: true # 检查特征相关性
+
+# 缓存配置
+cache:
+  enabled: true              # 是否启用缓存
+  cache_dir: ".cache/"      # 缓存目录
+  cache_processed_data: true # 缓存处理后的数据
+  cache_features: true      # 缓存特征
+  cache_splits: true        # 缓存数据分割
+  max_cache_size: "10GB"    # 最大缓存大小
+  cache_compression: "gzip" # 缓存压缩方式
+  cache_ttl: 86400         # 缓存生存时间（秒）
+
+# 监控配置
+monitoring:
+  track_data_stats: true    # 跟踪数据统计
+  log_data_info: true      # 记录数据信息
+  save_data_samples: true  # 保存数据样本
+  sample_size: 100         # 样本大小
+  monitor_drift: true      # 监控数据漂移
+  drift_threshold: 0.1     # 漂移阈值
+
+# 性能优化配置
+performance:
+  # 内存优化
+  memory_optimization:
+    enabled: true           # 是否启用内存优化
+    chunk_size: 10000      # 分块大小
+    use_categorical: true  # 使用分类数据类型
+    
+  # 并行处理
+  parallel_processing:
+    enabled: true          # 是否启用并行处理
+    n_jobs: -1            # 并行作业数（-1表示使用所有CPU）
+    backend: "threading"   # 并行后端
+    
+  # 数据压缩
+  compression:
+    enabled: true         # 是否启用压缩
+    method: "snappy"      # 压缩方法
+
+# 环境配置
+environment:
+  # 路径配置
+  data_root: "./data/"     # 数据根目录
+  output_dir: "./output/"  # 输出目录
+  log_dir: "./logs/"      # 日志目录
+  temp_dir: "./temp/"     # 临时目录
+  
+  # 系统配置
+  max_memory_usage: "8GB" # 最大内存使用
+  gpu_memory_fraction: 0.8 # GPU内存使用比例
+  
+  # 调试配置
+  debug_mode: false       # 调试模式
+  verbose: true          # 详细输出
+  log_level: "INFO"      # 日志级别

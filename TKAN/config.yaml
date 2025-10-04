@@ -1,0 +1,63 @@
+# config.yaml - TKAN模型配置文件
+
+# TKAN模型架构配置
+architecture:
+  # TKAN层配置
+  units: 128                        # TKAN层输出单元数
+  return_sequences: false           # 是否返回完整序列
+  stateful: false                   # 是否使用有状态模式
+  dropout: 0.2                      # Dropout比率
+  recurrent_dropout: 0.1            # 循环连接Dropout比率
+  
+  # 网络结构配置
+  num_layers: 2                     # TKAN层数量
+  hidden_dims: [256, 128]           # 隐藏层维度列表
+  activation: "tanh"                # 激活函数
+  
+  # KAN子层配置
+  kan_sublayers: 4                  # KAN子层数量
+  grid_size: 5                      # B-spline网格大小
+  spline_order: 3                   # B-spline阶数
+  
+  # 输出层配置
+  output_dim: 1                     # 输出维度（二元分类）
+  output_activation: "sigmoid"      # 输出激活函数
+
+# 训练配置
+training:
+  # 优化器配置
+  optimizer: "adam"                 # 优化器类型
+  learning_rate: 0.001              # 学习率
+  weight_decay: 1e-4                # 权重衰减
+  
+  # 训练控制
+  epochs: 100                       # 训练轮数
+  batch_size: 64                    # 批次大小
+  patience: 15                      # 早停耐心值
+  
+  # 学习率调度
+  scheduler: "step"                 # 学习率调度器
+  lr_decay: 0.5                     # 学习率衰减率
+  step_size: 30                     # 调度步长
+  
+  # 损失函数
+  loss_function: "binary_crossentropy"  # 损失函数类型
+  
+  # 正则化
+  l1_reg: 0.0                       # L1正则化
+  l2_reg: 1e-4                      # L2正则化
+
+# 推理配置
+inference:
+  # 预测配置
+  batch_size: 128                   # 推理批次大小
+  return_probabilities: true        # 是否返回概率
+  threshold: 0.5                    # 分类阈值（二元分类）
+  
+  # 序列处理
+  max_sequence_length: 30           # 最大序列长度
+  padding: "pre"                    # 填充策略
+  
+  # 输出格式
+  output_format: "numpy"            # 输出格式
+  precision: "float32"              # 数值精度

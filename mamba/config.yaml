@@ -1,0 +1,141 @@
+# config.yaml - Mamba模型配置文件
+# 基于选择性状态空间模型的高效序列处理架构
+
+# 模型架构配置
+architecture:
+  # 基础模型参数
+  d_model: 768                    # 模型隐藏维度
+  n_layer: 24                     # Mamba层数量
+  vocab_size: 50257               # 词汇表大小
+  
+  # Mamba特有配置
+  d_state: 16                     # SSM状态维度
+  d_conv: 4                       # 1D卷积核大小
+  expand: 2                       # 内部维度扩展因子
+  dt_rank: "auto"                 # delta参数的秩，auto表示d_model/16
+  
+  # 选择性扫描配置
+  conv_bias: true                 # 卷积层偏置
+  bias: false                     # 线性层偏置
+  use_fast_path: true             # 启用快速路径优化
+  
+  # 正则化
+  dropout: 0.1                    # Dropout概率
+  layer_norm_epsilon: 1e-5        # LayerNorm epsilon值
+  
+  # 初始化配置
+  initializer_range: 0.02         # 权重初始化范围
+  rescale_prenorm_residual: true  # 预归一化残差重缩放
+  
+  # Mamba版本选择
+  mamba_version: "mamba2"         # 使用Mamba2架构
+  use_mambapy: false              # 不使用MambaPy实现
+
+# 训练配置
+training:
+  # 基础训练参数
+  batch_size: 32                  # 训练批次大小
+  max_epochs: 100                 # 最大训练轮数
+  gradient_accumulation_steps: 1   # 梯度累积步数
+  
+  # 优化器配置
+  optimizer:
+    type: "AdamW"                 # 优化器类型
+    lr: 5e-4                      # 学习率
+    weight_decay: 0.01            # 权重衰减
+    betas: [0.9, 0.999]          # Adam beta参数
+    eps: 1e-8                     # Adam epsilon
+  
+  # 学习率调度
+  lr_scheduler:
+    type: "cosine"                # 余弦退火调度
+    warmup_steps: 1000            # 预热步数
+    min_lr_ratio: 0.1             # 最小学习率比例
+  
+  # 梯度控制
+  gradient_clipping:
+    enabled: true                 # 启用梯度裁剪
+    max_norm: 1.0                 # 最大梯度范数
+  
+  # 混合精度训练
+  mixed_precision:
+    enabled: true                 # 启用混合精度
+    loss_scale: "dynamic"         # 动态损失缩放
+  
+  # 早停配置
+  early_stopping:
+    enabled: true                 # 启用早停
+    patience: 10                  # 耐心值
+    min_delta: 1e-4              # 最小改进阈值
+    monitor: "val_loss"           # 监控指标
+
+# 推理配置
+inference:
+  # 生成参数
+  max_length: 512                 # 最大生成长度
+  temperature: 1.0                # 采样温度
+  top_k: 50                       # Top-k采样
+  top_p: 0.9                      # Top-p采样
+  
+  # 批处理配置
+  batch_size: 16                  # 推理批次大小
+  use_cache: true                 # 启用KV缓存
+  
+  # 序列处理
+  pad_token_id: 50256             # 填充token ID
+  eos_token_id: 50256             # 结束token ID
+  
+  # 性能优化
+  use_fast_tokenizer: true        # 使用快速分词器
+  return_dict_in_generate: true   # 生成时返回字典格式
+
+# 数据配置适配
+data:
+  # 表格数据特定配置
+  input_features: null            # 自动从data.yaml推断
+  sequence_length: 128            # 序列长度（适配表格数据行）
+  feature_embedding_dim: 64       # 特征嵌入维度
+  
+  # 数据预处理
+  normalize_features: true        # 特征归一化
+  handle_missing: "mean"          # 缺失值处理策略
+  
+  # 批处理配置
+  dataloader_num_workers: 4       # 数据加载器工作进程数
+  pin_memory: true                # 固定内存
+
+# 模型保存和检查点
+checkpoint:
+  save_strategy: "epoch"          # 保存策略
+  save_steps: 1000               # 保存步数间隔
+  save_total_limit: 3            # 最大保存检查点数
+  load_best_model_at_end: true   # 训练结束时加载最佳模型
+  metric_for_best_model: "eval_accuracy"  # 最佳模型评估指标
+  greater_is_better: true        # 指标越大越好
+
+# 评估配置
+evaluation:
+  eval_strategy: "epoch"         # 评估策略
+  eval_steps: 500               # 评估步数间隔
+  per_device_eval_batch_size: 32 # 评估批次大小
+  
+  # 评估指标
+  metrics:
+    - "accuracy"                 # 准确率
+    - "f1"                      # F1分数
+    - "precision"               # 精确率
+    - "recall"                  # 召回率
+
+# 硬件和性能配置
+performance:
+  # 内存优化
+  gradient_checkpointing: false   # 梯度检查点（节省内存但增加计算）
+  dataloader_pin_memory: true    # 数据加载器固定内存
+  
+  # 并行化
+  dataparallel: false           # 数据并行
+  find_unused_parameters: false # 查找未使用参数
+  
+  # 编译优化
+  torch_compile: false          # PyTorch编译优化
+  compile_mode: "default"       # 编译模式

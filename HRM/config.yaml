@@ -1,0 +1,95 @@
+# config.yaml - HRM (Hierarchical Reasoning Model) 配置文件
+
+# HRM 模型架构配置
+architecture:
+  # 核心维度参数
+  d_model: 512                    # 模型隐藏维度
+  d_ff: 2048                      # 前馈网络维度
+  vocab_size: 10000               # 词汇表大小，根据任务自动推断
+  seq_len: 900                    # 序列最大长度，对应30x30网格
+  
+  # 层次化架构参数
+  n_layers: 8                     # Transformer层数
+  n_heads: 8                      # 多头注意力头数
+  hierarchical_levels: 3          # 层次化推理层级数
+  reasoning_depth: 4              # 推理深度
+  
+  # HRM特殊参数
+  h_cycles: 3                     # 高层推理循环次数
+  l_cycles: 2                     # 低层推理循环次数
+  halt_max_steps: 10              # ACT最大推理步数
+  
+  # 正则化参数
+  dropout: 0.1                    # Dropout概率
+  attention_dropout: 0.1          # 注意力Dropout
+  activation: "swiglu"            # 激活函数
+  
+  # 位置编码配置
+  position_encoding: "rope"       # 位置编码类型
+  max_position_embeddings: 1024   # 最大位置嵌入
+  
+  # 归一化配置
+  norm_type: "rms"                # 归一化类型
+  norm_eps: 1e-6                  # 归一化epsilon
+
+# 训练超参数配置
+training:
+  # 优化器配置
+  optimizer: "adamw"              # 优化器类型
+  learning_rate: 1e-4             # 初始学习率
+  weight_decay: 0.01              # 权重衰减
+  beta1: 0.9                      # Adam beta1 参数
+  beta2: 0.999                    # Adam beta2 参数
+  eps: 1e-8                       # 优化器epsilon
+  
+  # 训练控制参数
+  epochs: 100                     # 训练轮数
+  batch_size: 32                  # 批次大小
+  gradient_clip_norm: 1.0         # 梯度裁剪
+  warmup_steps: 1000              # 预热步数
+  
+  # 学习率调度
+  scheduler: "cosine"             # 调度器类型
+  lr_decay_factor: 0.1            # 学习率衰减因子
+  patience: 10                    # 早停耐心值
+  min_lr: 1e-6                    # 最小学习率
+  
+  # ACT损失配置
+  act_loss_weight: 0.01           # ACT损失权重
+  halt_threshold: 0.99            # 停机阈值
+  
+  # 混合精度训练
+  mixed_precision: true           # 启用混合精度
+  precision_type: "bfloat16"      # 精度类型
+  
+  # 正则化参数
+  label_smoothing: 0.0            # 标签平滑
+  dropout_schedule: false         # 动态dropout调度
+
+# 推理配置
+inference:
+  # 推理策略参数
+  max_steps: 100                  # 最大推理步数
+  beam_size: 1                    # 束搜索大小
+  temperature: 1.0                # 采样温度
+  top_k: 50                       # Top-K采样
+  top_p: 0.9                      # Top-P采样
+  
+  # 生成控制参数
+  do_sample: false                # 是否采样
+  repetition_penalty: 1.0         # 重复惩罚
+  length_penalty: 1.0             # 长度惩罚
+  
+  # ACT推理配置
+  adaptive_computation: true      # 启用自适应计算
+  halt_confidence: 0.95           # 停机置信度
+  min_computation_steps: 1        # 最小计算步数
+  
+  # 后处理配置
+  output_format: "sequence"       # 输出格式
+  decode_strategy: "greedy"       # 解码策略
+  
+  # 推理优化
+  use_cache: true                 # 使用缓存
+  batch_inference: true           # 批量推理
+  parallel_reasoning: false       # 并行推理

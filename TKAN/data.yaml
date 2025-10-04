@@ -1,0 +1,326 @@
+# data.yaml - TKAN模型数据配置文件
+# 定义数据格式、任务类型、数据路径和预处理策略
+
+data_format:
+  input_type: "tabular"              # 表格数据类型
+  file_format: "parquet"             # Parquet文件格式
+  feature_identifier: "@"            # 特征列标识符
+  label_position: "last"             # 标签列位置
+
+task:
+  type: "binary_classification"      # 任务类型
+  num_features: null                 # 自动推断特征数量
+  num_classes: null                  # 自动推断类别数量
+
+data_paths:
+  data_folder: "/home/feng.hao.jie/deployment/model_explorer/b_model_reproduction_agent/data/feature_set"
+  data_phase: 1                      # 数据阶段选择 (1-6)
+  data_file: "mrmr_task_1_*.pq"      # 数据文件模式
+
+preprocessing:
+  feature_selection:
+    method: "automatic"              # 自动特征选择
+    identifier: "@"                  # 特征列标识符
+  scaling:
+    method: "standard"               # 标准化方法
+    apply_to: "features"             # 应用到特征列
+  split:
+    method: "time_series"            # 时间序列分割
+    train_duration: "1_year"         # 训练期长度
+    test_duration: "remaining"       # 测试期长度
+    time_column: "date"              # 时间列名称
+
+sequence_config:
+  sequence_length: 30                # TKAN序列长度
+  stride: 1                          # 序列步长
+  return_sequences: false            # 返回序列标志
+  stateful: false                    # 状态保持标志
+
+validation:
+  method: "time_series_split"        # 验证方法
+  validation_size: 0.2               # 验证集比例
+  shuffle: false                     # 不打乱时间序列
+
+data_loading:
+  batch_size: 32                     # 批次大小
+  num_workers: 4                     # 数据加载工作进程数
+  pin_memory: true                   # 内存固定
+  drop_last: false                   # 保留最后不完整批次
+
+# Phase 1 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_1:
+  file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+  samples: 24726
+  features: 93
+  train_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2013-01-01"
+    end_date: "2017-07-01"
+    samples: 17308
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2017-07-02"
+    end_date: "2017-12-31"
+    samples: 3708
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2018-01-01"
+    end_date: "2018-07-02"
+    samples: 3710
+    duration_years: 0.5
+# Phase 2 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_2:
+  file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+  samples: 28633
+  features: 89
+  train_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2013-07-01"
+    end_date: "2017-12-29"
+    samples: 20043
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2017-12-30"
+    end_date: "2018-06-30"
+    samples: 4294
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2018-07-01"
+    end_date: "2018-12-30"
+    samples: 4296
+    duration_years: 0.5
+# Phase 3 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_3:
+  file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+  samples: 32118
+  features: 85
+  train_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2014-01-01"
+    end_date: "2018-07-01"
+    samples: 22482
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2018-07-02"
+    end_date: "2018-12-31"
+    samples: 4817
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2019-01-01"
+    end_date: "2019-07-02"
+    samples: 4819
+    duration_years: 0.5
+# Phase 4 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_4:
+  file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+  samples: 35549
+  features: 80
+  train_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2014-07-01"
+    end_date: "2018-12-29"
+    samples: 24884
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2018-12-30"
+    end_date: "2019-06-30"
+    samples: 5332
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2019-07-01"
+    end_date: "2019-12-30"
+    samples: 5333
+    duration_years: 0.5
+# Phase 5 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_5:
+  file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+  samples: 37236
+  features: 82
+  train_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2015-01-01"
+    end_date: "2019-07-01"
+    samples: 26065
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2019-07-02"
+    end_date: "2019-12-31"
+    samples: 5585
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2020-01-01"
+    end_date: "2020-07-01"
+    samples: 5586
+    duration_years: 0.5
+# Phase 6 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_6:
+  file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+  samples: 39648
+  features: 75
+  train_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2015-07-01"
+    end_date: "2019-12-29"
+    samples: 27753
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2019-12-30"
+    end_date: "2020-06-29"
+    samples: 5947
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2020-06-30"
+    end_date: "2020-12-29"
+    samples: 5948
+    duration_years: 0.5
+
+# Phase 1 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_1:
+  file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+  samples: 24726
+  features: 93
+  train_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2013-01-01"
+    end_date: "2017-07-01"
+    samples: 17308
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2017-07-02"
+    end_date: "2017-12-31"
+    samples: 3708
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_1_2013-01-01_2018-06-30.pq"
+    start_date: "2018-01-01"
+    end_date: "2018-07-02"
+    samples: 3710
+    duration_years: 0.5
+# Phase 2 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_2:
+  file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+  samples: 28633
+  features: 89
+  train_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2013-07-01"
+    end_date: "2017-12-29"
+    samples: 20043
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2017-12-30"
+    end_date: "2018-06-30"
+    samples: 4294
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_2_2013-07-01_2018-12-31.pq"
+    start_date: "2018-07-01"
+    end_date: "2018-12-30"
+    samples: 4296
+    duration_years: 0.5
+# Phase 3 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_3:
+  file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+  samples: 32118
+  features: 85
+  train_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2014-01-01"
+    end_date: "2018-07-01"
+    samples: 22482
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2018-07-02"
+    end_date: "2018-12-31"
+    samples: 4817
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_3_2014-01-01_2019-06-30.pq"
+    start_date: "2019-01-01"
+    end_date: "2019-07-02"
+    samples: 4819
+    duration_years: 0.5
+# Phase 4 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_4:
+  file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+  samples: 35549
+  features: 80
+  train_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2014-07-01"
+    end_date: "2018-12-29"
+    samples: 24884
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2018-12-30"
+    end_date: "2019-06-30"
+    samples: 5332
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_4_2014-07-01_2019-12-31.pq"
+    start_date: "2019-07-01"
+    end_date: "2019-12-30"
+    samples: 5333
+    duration_years: 0.5
+# Phase 5 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_5:
+  file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+  samples: 37236
+  features: 82
+  train_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2015-01-01"
+    end_date: "2019-07-01"
+    samples: 26065
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2019-07-02"
+    end_date: "2019-12-31"
+    samples: 5585
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_5_2015-01-01_2020-06-30.pq"
+    start_date: "2020-01-01"
+    end_date: "2020-07-01"
+    samples: 5586
+    duration_years: 0.5
+# Phase 6 Five Point Five 数据分割信息 (由TrainingAgent自动添加)
+phase_6:
+  file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+  samples: 39648
+  features: 75
+  train_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2015-07-01"
+    end_date: "2019-12-29"
+    samples: 27753
+    duration_years: 4.5
+  valid_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2019-12-30"
+    end_date: "2020-06-29"
+    samples: 5947
+    duration_years: 0.5
+  test_data:
+    file: "mrmr_task_6_2015-07-01_2020-12-31.pq"
+    start_date: "2020-06-30"
+    end_date: "2020-12-29"
+    samples: 5948
+    duration_years: 0.5
